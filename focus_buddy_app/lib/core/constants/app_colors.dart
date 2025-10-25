@@ -22,6 +22,8 @@ class AppColors {
   // Buttons
   static const Color btnYellowFocus = Color.fromRGBO(235, 254, 126,1);
   static const Color btnPurpleFocus = Color.fromRGBO(168, 129, 238, 1);
+  static const Color btnBlueFocus = Color.fromRGBO(174, 193, 252, 1);
+
   static const Color btnDisabled = Color(0xFF3A3A3A);
 
   // Graphs or accents

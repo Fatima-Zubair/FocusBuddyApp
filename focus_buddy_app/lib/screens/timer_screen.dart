@@ -6,7 +6,7 @@ import '../services/focus_timer_service.dart';
 import '../core/widgets/timer_circle.dart';
 import '../core/widgets/timer_controls.dart';
 import '../core/widgets/sound_selection_modal.dart';
-import '../core/widgets/session_complete_dialog.dart';
+import '../core/widgets/reusable_complete_dialog.dart';
 
 class FocusTimerScreen extends StatefulWidget {
   const FocusTimerScreen({super.key});
@@ -16,7 +16,7 @@ class FocusTimerScreen extends StatefulWidget {
 }
 
 class _FocusTimerScreenState extends State<FocusTimerScreen> with TickerProviderStateMixin {
-  static const int focusDuration = 1 * 60; // 1 minute for testing
+  static const int focusDuration = 1 * 60; // 1 minute for testing should
   int remainingSeconds = focusDuration;
   Timer? timer;
   bool isRunning = false;
@@ -33,8 +33,8 @@ class _FocusTimerScreenState extends State<FocusTimerScreen> with TickerProvider
   late AnimationController _progressController;
   late AnimationController _buttonController;
   late Animation<double> _glowAnimation;
-  late Animation<double> _progressAnimation;
-  late Animation<double> _scaleAnimation;
+  // late Animation<double> _progressAnimation;
+  // late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
@@ -62,13 +62,13 @@ class _FocusTimerScreenState extends State<FocusTimerScreen> with TickerProvider
       CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
     );
 
-    _progressAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _progressController, curve: Curves.easeOut),
-    );
+    // _progressAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    //   CurvedAnimation(parent: _progressController, curve: Curves.easeOut),
+    // );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _buttonController, curve: Curves.easeOut),
-    );
+    // _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+    //   CurvedAnimation(parent: _buttonController, curve: Curves.easeOut),
+    // );
   }
 
   void startTimer() async {
@@ -168,12 +168,24 @@ class _FocusTimerScreenState extends State<FocusTimerScreen> with TickerProvider
 
 
     if (!mounted) return;
+    resetTimer();
 
-    SessionCompleteDialog.show(
+
+    await ReusableCompleteDialog.show(
       context: context,
-      xp: result['xp'],
-      streak: result['streak'],
+      title: "Session Complete!",
+      subtitle: "Great job staying focused.",
+      xp: 10,
+      streak: 5,
+      icon: Icons.check_circle,
+      iconColor: AppColors.neonYellow,
+      primaryButtonText: "Take Break",
+      onPrimaryPressed: () => Navigator.pushReplacementNamed(context, '/home'),
+      secondaryButtonText: "Breathing Session",
+      onSecondaryPressed: () => Navigator.pushNamed(context, '/breathing'),
     );
+
+
   }
 
   String formatTime(int seconds) {
