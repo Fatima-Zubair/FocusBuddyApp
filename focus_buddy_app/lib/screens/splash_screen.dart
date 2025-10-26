@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Navigate to Home after delay
     Future.delayed(const Duration(seconds: 5), () {
-      Navigator.pushReplacementNamed(context, '/focusTimer');
+      Navigator.pushReplacementNamed(context, '/home');
     });
   }
 

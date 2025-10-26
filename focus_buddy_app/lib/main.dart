@@ -22,7 +22,9 @@ class FocusBuddyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => TimerProvider()),
+        ChangeNotifierProvider(
+          create: (_) => TimerProvider()..initializeUser(), // Use initializeUser instead of loadStats
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

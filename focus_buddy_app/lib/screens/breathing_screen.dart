@@ -86,6 +86,13 @@ class _BreathingScreenState extends State<BreathingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.darkBackground,
+        title: const Text(
+          "Breathing Session",
+          style: TextStyle(color: AppColors.textPrimary),
+        ),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

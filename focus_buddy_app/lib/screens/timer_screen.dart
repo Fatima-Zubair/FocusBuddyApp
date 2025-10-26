@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
-import '../services/focus_timer_service.dart';
+import '../providers/timer_provider.dart';
 import '../core/widgets/timer_circle.dart';
 import '../core/widgets/timer_controls.dart';
 import '../core/widgets/sound_selection_modal.dart';
@@ -26,20 +27,18 @@ class _FocusTimerScreenState extends State<FocusTimerScreen> with TickerProvider
   String selectedSound = 'rainsound.mp3';
   final List<String> sounds = ['nature.mp3', 'rainsound.mp3', 'water.mp3'];
 
-  final FocusTimerService _timerService = FocusTimerService();
+  // final FocusTimerService _timerService = FocusTimerService();
 
   // Animation controllers
   late AnimationController _glowController;
   late AnimationController _progressController;
   late AnimationController _buttonController;
   late Animation<double> _glowAnimation;
-  // late Animation<double> _progressAnimation;
-  // late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
-    _timerService.init();
+    // _timerService.init();
 
     // Initialize animation controllers - SLOWED DOWN
     _glowController = AnimationController(
@@ -62,13 +61,6 @@ class _FocusTimerScreenState extends State<FocusTimerScreen> with TickerProvider
       CurvedAnimation(parent: _glowController, curve: Curves.easeInOut),
     );
 
-    // _progressAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-    //   CurvedAnimation(parent: _progressController, curve: Curves.easeOut),
-    // );
-
-    // _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-    //   CurvedAnimation(parent: _buttonController, curve: Curves.easeOut),
-    // );
   }
 
   void startTimer() async {
@@ -164,19 +156,22 @@ class _FocusTimerScreenState extends State<FocusTimerScreen> with TickerProvider
       isPaused = false;
     });
 
-    final result = await _timerService.saveSessionData();
-
+    // final result = await _timerService.saveSessionData();
 
     if (!mounted) return;
     resetTimer();
+    final timerProvider = Provider.of<TimerProvider>(context, listen: false);
 
+    // Await the session completion so streak updates
+    await timerProvider.completeSession();
 
+    // Pass the updated streak to the dialog
     await ReusableCompleteDialog.show(
       context: context,
       title: "Session Complete!",
       subtitle: "Great job staying focused.",
-      xp: 10,
-      streak: 5,
+      xp: TimerProvider.xpPerSession,
+      streak: timerProvider.streak,
       icon: Icons.check_circle,
       iconColor: AppColors.neonYellow,
       primaryButtonText: "Take Break",
@@ -184,8 +179,6 @@ class _FocusTimerScreenState extends State<FocusTimerScreen> with TickerProvider
       secondaryButtonText: "Breathing Session",
       onSecondaryPressed: () => Navigator.pushNamed(context, '/breathing'),
     );
-
-
   }
 
   String formatTime(int seconds) {
